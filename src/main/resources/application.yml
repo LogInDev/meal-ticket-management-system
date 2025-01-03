@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url:
-    username: 
-    password:
+    url: jdbc:mysql://localhost:3306/meal_ticket_management?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
