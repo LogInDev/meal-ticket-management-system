@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lunch</title>
+</head>
+<body>
+<div>
+    <ul>
+        <li><a href="/lunch">점심</a></li>
+        <li><a href="/dinner">저녁</a></li>
+    </ul>
+    <table>
+        <thead>
+        <tr>
+            <th>이름</th>
+            <th>사용</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.name}"></td>
+            <td>
+                <button th:if="${!user.used}" th:onclick="'useMeal(' + ${user.id} + ')'">사용</button>
+                <button th:if="${user.used}" th:onclick="'cancelMeal(' + ${user.id} + ')'">사용 완료</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
