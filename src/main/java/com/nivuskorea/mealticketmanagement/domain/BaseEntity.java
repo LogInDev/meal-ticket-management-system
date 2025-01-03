@@ -1,4 +1,4 @@
-package com.nivuskorea.mealticketmanagement.model.config;
+package com.nivuskorea.mealticketmanagement.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

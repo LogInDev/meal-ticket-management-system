@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <title>식권 사용자</title>
+</head>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+<script>
+    function selectTab(tabIndex) {
+        const activeLine = document.querySelector('.active-line');
+        const tabs = document.querySelectorAll('.tab-button');
+
+        tabs.forEach((tab, index) => {
+            if (index === tabIndex) {
+                tab.classList.add('active');
+                activeLine.style.left = `${index * 50}%`; // 왼쪽으로 50% 이동
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+    }
+
+    // 초기 설정 (첫 번째 탭 활성화)
+    selectTab(0);
+</script>
+<div class="container mt-4">
+    <div class="tabs mb-3">
+        <button class="tab-button active" onclick="selectTab(0)">중식</button>
+        <button class="tab-button" onclick="selectTab(1)">석식</button>
+        <div class="active-line"></div>
+    </div>
+    <table class="table table-bordered">
+        <thead class="table-light">
+        <tr>
+            <th style="width: 33%;">이름</th>
+            <th style="width: 33%;">적용시간</th>
+            <th style="width: 33%;">사용여부</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>홍길동</td>
+            <td>2025-01-03 12:00</td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-success" style="width: 80px;">사용</button>
+            </td>
+        </tr>
+        <tr>
+            <td>김철수</td>
+            <td>2025-01-03 18:00</td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-danger" style="width: 80px;">사용완료</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="footer mt-4">
+        <div class="d-flex align-items-center">
+            <input type="text" id="name" placeholder="이름" class="form-control me-2" style="flex: 2;" />
+            <input type="text" id="employeeId" placeholder="사원번호" class="form-control me-2" style="flex: 2;" />
+            <div class="form-check form-check-inline me-2">
+                <input type="radio" id="employed" name="employmentStatus" value="재직" class="form-check-input" checked />
+                <label for="employed" class="form-check-label">재직</label>
+            </div>
+            <div class="form-check form-check-inline me-2">
+                <input type="radio" id="unemployed" name="employmentStatus" value="퇴사" class="form-check-input" />
+                <label for="unemployed" class="form-check-label">퇴사</label>
+            </div>
+            <button class="btn btn-primary btn-sm" style="width: 50px; height: auto;">적용</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.nivuskorea.mealticketmanagement.model.entity;
+package com.nivuskorea.mealticketmanagement.domain;
 
 public enum MealStatus {
     LUNCHED, DINNER, ADDED, CANCELED;

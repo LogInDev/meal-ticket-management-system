@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="bodyHeader" th:fragment="bodyHeader">
+  <a href="/use" th:class="${currentPage == 'use'} ? 'active' : ''">식권사용</a>
+  <a href="/records" th:class="${currentPage == 'records'} ? 'active' : ''">식권조회</a>
+</div>

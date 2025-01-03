@@ -1,8 +1,10 @@
-package com.nivuskorea.mealticketmanagement.model.entity;
+package com.nivuskorea.mealticketmanagement.domain;
 
-import com.nivuskorea.mealticketmanagement.model.config.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.*;
 
@@ -11,6 +13,7 @@ import static jakarta.persistence.FetchType.*;
 public class MealRecord extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "RECORD_ID")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
@@ -21,6 +24,6 @@ public class MealRecord extends BaseEntity {
     private MealStatus mealStatus;
     private Boolean isCanceled = false;
 
-    @OneToOne(mappedBy = "mealRecord", fetch = LAZY)
-    private TotalTicket totalTicket;
+    @OneToMany(mappedBy = "mealRecord")
+    private List<TotalTicket> totalTickets = new ArrayList<>();
 }

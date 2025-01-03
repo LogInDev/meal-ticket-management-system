@@ -1,0 +1,142 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.bodyHeader {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    background-color: #f8f9fa;
+}
+
+.bodyHeader a {
+    flex: 1; /* 각 링크가 전체의 1/2 차지 */
+    text-align: center;
+    padding: 15px 0; /* 위아래 여백 추가 */
+    font-size: 18px;
+    text-decoration: none;
+    color: #495057;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 부드러운 색상 전환 */
+}
+
+.bodyHeader a.active {
+    background-color: #343a40; /* 활성화된 탭의 배경색 */
+    color: #ffffff; /* 활성화된 탭의 글자색 */
+    font-weight: bold;
+}
+
+/*-------------------------------use css-------------------------------*/
+.tabs {
+    display: flex;
+    position: relative; /* active-line의 기준점 설정 */
+    width: 100%;
+    border-bottom: 2px solid #dee2e6;
+    height: 50px;
+}
+
+.tab-button {
+    flex: 1; /* 각 탭이 전체 길이의 1/2 차지 */
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #495057;
+    text-align: center;
+    position: relative; /* 텍스트가 중앙에 위치하도록 설정 */
+    z-index: 2; /* active-line 위에 텍스트 표시 */
+    line-height: 50px; /* 버튼 높이와 동일하게 설정하여 텍스트 중앙 정렬 */
+}
+
+.tab-button.active {
+    font-weight: bold;
+    color: #343a40; /* 활성화된 탭의 텍스트 색상 */
+}
+
+.active-line {
+    position: absolute;
+    bottom: 0;
+    left: 0; /* 초기 위치 */
+    height: 2px;
+    width: 50%; /* 활성화된 탭 길이 */
+    background-color: #343a40; /* 파란색 */
+    transition: left 0.3s ease; /* 부드럽게 이동 효과 */
+    z-index: 1; /* 버튼 뒤에 위치 */
+}
+
+.table-bordered td, .table-bordered th {
+    border-left: none !important;
+    border-right: none !important;
+}
+
+.btn {
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+.footer {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-top: 1px solid #dee2e6;
+}
+
+.footer input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+.footer .form-check {
+    display: flex;
+    align-items: center;
+}
+
+.footer .form-check-label {
+    margin-right: 20px;
+}
+
+.footer button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.footer button:hover {
+    background-color: #0056b3;
+}
+
+/*-------------------------------records css-------------------------------*/
+
+.table {
+    margin-top: 20px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-striped tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.table td, .table th {
+    vertical-align: middle;
+    text-align: center;
+}
+
+select, input[type="date"] {
+    padding: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
