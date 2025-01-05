@@ -63,7 +63,7 @@ body {
     height: 2px;
     width: 50%; /* 활성화된 탭 길이 */
     background-color: #343a40; /* 파란색 */
-    transition: left 0.3s ease; /* 부드럽게 이동 효과 */
+    /*transition: left 0.3s ease; !* 부드럽게 이동 효과 *!*/
     z-index: 1; /* 버튼 뒤에 위치 */
 }
 
@@ -113,6 +113,37 @@ body {
 
 .footer button:hover {
     background-color: #0056b3;
+}
+
+.is-invalid {
+    border: 1px solid red; /* 입력란 테두리를 빨간색으로 */
+}
+
+.invalid-feedback {
+    color: red; /* 에러 메시지 텍스트 색상 */
+    font-size: 0.9em; /* 선택 사항: 에러 메시지 크기 조정 */
+}
+.form-group label {
+    display: block;
+    text-align: left;
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+}
+
+.form-group input, .form-group select {
+    height: calc(2.5rem + 2px); /* 동일한 높이로 설정 */
+}
+
+#employmentStatus {
+    width: 100%; /* 드롭다운 너비를 부모 너비에 맞춤 */
+    min-width: 160px; /* 최소 너비 설정 */
+    white-space: nowrap; /* 옵션 줄바꿈 방지 */
+}
+
+button.btn-primary {
+    height: calc(2.5rem + 2px); /* 버튼 높이를 작성란 높이와 동일하게 */
+    padding: 0 1rem; /* 좌우 여백 */
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 
 /*-------------------------------records css-------------------------------*/

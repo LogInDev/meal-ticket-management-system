@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,70 +8,95 @@
     <title>식권 사용자</title>
 </head>
 <body>
-<div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+<div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
 <script>
-    function selectTab(tabIndex) {
+    function updateActiveLine() {
+        const activeTab = document.querySelector('.tab-button.active');
         const activeLine = document.querySelector('.active-line');
-        const tabs = document.querySelectorAll('.tab-button');
 
-        tabs.forEach((tab, index) => {
-            if (index === tabIndex) {
-                tab.classList.add('active');
-                activeLine.style.left = `${index * 50}%`; // 왼쪽으로 50% 이동
-            } else {
-                tab.classList.remove('active');
-            }
-        });
+        if (activeTab && activeLine) {
+            const tabLeft = activeTab.offsetLeft; // 활성 탭의 왼쪽 위치
+            activeLine.style.left = `${tabLeft}px`; // 활성화된 탭 위치로 이동
+        }
     }
 
-    // 초기 설정 (첫 번째 탭 활성화)
-    selectTab(0);
+    document.addEventListener('DOMContentLoaded', () => {
+        // 초기 설정: 활성 라인을 현재 활성 탭으로 이동
+        updateActiveLine();
+
+        // 탭 클릭 시 활성화된 탭과 라인을 업데이트
+        const tabs = document.querySelectorAll('.tab-button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(tab => tab.classList.remove('active')); // 모든 탭 비활성화
+                tab.classList.add('active'); // 클릭된 탭 활성화
+                updateActiveLine(); // 활성 라인 업데이트
+            });
+        });
+    });
 </script>
 <div class="container mt-4">
     <div class="tabs mb-3">
-        <button class="tab-button active" onclick="selectTab(0)">중식</button>
-        <button class="tab-button" onclick="selectTab(1)">석식</button>
+        <button class="tab-button" th:classappend="${mealType == 'lunch'} ? 'active' : ''" onclick="window.location='/use?mealType=lunch'">중식</button>
+        <button class="tab-button" th:classappend="${mealType == 'dinner'} ? 'active' : ''" onclick="window.location='/use?mealType=dinner'">석식</button>
         <div class="active-line"></div>
     </div>
     <table class="table table-bordered">
         <thead class="table-light">
         <tr>
-            <th style="width: 33%;">이름</th>
-            <th style="width: 33%;">적용시간</th>
-            <th style="width: 33%;">사용여부</th>
+            <th style="width: 25%;">이름</th>
+            <th style="width: 25%;">사원번호</th>
+            <th style="width: 25%;">적용시간</th>
+            <th style="width: 25%;">사용여부</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>홍길동</td>
-            <td>2025-01-03 12:00</td>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.employeeNumber}"></td>
+            <td th:text="${user.displayUpdateAt}"></td>
             <td class="text-center">
-                <button class="btn btn-sm btn-success" style="width: 80px;">사용</button>
-            </td>
-        </tr>
-        <tr>
-            <td>김철수</td>
-            <td>2025-01-03 18:00</td>
-            <td class="text-center">
-                <button class="btn btn-sm btn-danger" style="width: 80px;">사용완료</button>
+                <button th:if="!${user.isCanceled}" class="btn btn-sm btn-success unused" th:onclick="'useTicket(' + ${user.id} + ')'" style="width: 80px;">사용</button>
+                <button th:if="${user.isCanceled}" class="btn btn-sm btn-danger used" th:onclick="'cancelTicket(' + ${user.id} + ')'" style="width: 80px;">사용완료</button>
             </td>
         </tr>
         </tbody>
     </table>
     <div class="footer mt-4">
-        <div class="d-flex align-items-center">
-            <input type="text" id="name" placeholder="이름" class="form-control me-2" style="flex: 2;" />
-            <input type="text" id="employeeId" placeholder="사원번호" class="form-control me-2" style="flex: 2;" />
-            <div class="form-check form-check-inline me-2">
-                <input type="radio" id="employed" name="employmentStatus" value="재직" class="form-check-input" checked />
-                <label for="employed" class="form-check-label">재직</label>
+        <form th:action="@{/use}" th:method="post" th:object="${userForm}">
+            <input type="hidden" name="mealType" th:value="${mealType}" />
+            <div class="d-flex align-items-center">
+                <!-- 이름 -->
+                <div class="form-group me-3 flex-grow-1">
+                    <label for="name" class="form-label">이름</label>
+                    <input type="text" id="name" th:field="*{name}"
+                           th:class="${#fields.hasErrors('name')} ? 'form-control is-invalid' : 'form-control'" />
+                    <p th:if="${#fields.hasErrors('name')}" class="invalid-feedback" th:errors="*{name}"></p>
+                </div>
+
+                <!-- 사원번호 -->
+                <div class="form-group me-3 flex-grow-1">
+                    <label for="employeeNumber" class="form-label">사원번호</label>
+                    <input type="text" id="employeeNumber" th:field="*{employeeNumber}"
+                           th:class="${#fields.hasErrors('employeeNumber')} ? 'form-control is-invalid' : 'form-control'" />
+                    <p th:if="${#fields.hasErrors('employeeNumber')}" class="invalid-feedback" th:errors="*{employeeNumber}"></p>
+                </div>
+
+                <!-- 재직 상태 -->
+                <div class="form-group me-3 flex-grow-2">
+                    <label for="employmentStatus" class="form-label">재직 상태</label>
+                    <select id="employmentStatus" th:field="*{employmentStatus}" class="form-control">
+                        <option th:each="status : ${T(com.nivuskorea.mealticketmanagement.domain.EmploymentStatus).values()}"
+                                th:value="${status}" th:text="${status}"></option>
+                    </select>
+                </div>
+
+                <!-- 적용 버튼 -->
+                <div>
+                    <button type="submit" class="btn btn-primary btn-block align-self-end">적용</button>
+                </div>
             </div>
-            <div class="form-check form-check-inline me-2">
-                <input type="radio" id="unemployed" name="employmentStatus" value="퇴사" class="form-check-input" />
-                <label for="unemployed" class="form-check-label">퇴사</label>
-            </div>
-            <button class="btn btn-primary btn-sm" style="width: 50px; height: auto;">적용</button>
-        </div>
+        </form>
     </div>
 </div>
 </body>

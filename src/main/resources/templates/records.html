@@ -8,7 +8,7 @@
   <title>식권 조회</title>
 </head>
 <body>
-<div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+<div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
 <div class="container mt-4">
   <table class="table table-striped">
     <thead>
@@ -20,17 +20,25 @@
     </tr>
     </thead>
     <tbody>
-    <tr>
-      <td>2025-01-03</td>
-      <td>중식</td>
-      <td>5</td>
-      <td>50</td>
+    <tr th:each="record : ${records}" th:onclick="'toggleDetails(' + ${record.id} + ')'">
+      <td th:text="${record.date}"></td>
+      <td th:text="${record.mealType}"></td>
+      <td th:text="${record.userCount}"></td>
+      <td th:text="${record.remainingTickets}"></td>
     </tr>
-    <tr>
-      <td>2025-01-02</td>
-      <td>석식</td>
-      <td>3</td>
-      <td>47</td>
+    <tr th:each="user : ${record.users}" th:if="${record.expanded}">
+      <td colspan="4">
+        <div>
+          <span th:text="${user.name}"></span>
+          <select th:if="${record.editing}">
+            <option value="중식" th:selected="${user.mealType == '중식'}">중식</option>
+            <option value="석식" th:selected="${user.mealType == '석식'}">석식</option>
+          </select>
+          <input type="date" th:if="${record.editing}" th:value="${user.date}" />
+          <button th:if="${record.editing}" class="btn btn-primary btn-sm" onclick="saveRecord(${user.id})">저장</button>
+          <button th:if="${record.editing}" class="btn btn-danger btn-sm" onclick="deleteRecord(${user.id})">삭제</button>
+        </div>
+      </td>
     </tr>
     </tbody>
   </table>

@@ -22,8 +22,21 @@ public class MealRecord extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private MealStatus mealStatus;
-    private Boolean isCanceled = false;
+    private Boolean isCanceled;
 
     @OneToMany(mappedBy = "mealRecord")
     private List<TotalTicket> totalTickets = new ArrayList<>();
+
+    protected MealRecord() {
+        //JPA가 사용하는 기본 생성자
+    }
+
+    public MealRecord(User user, MealStatus mealStatus, Boolean isCanceled) {
+        if (user.getId() == null) {
+            throw new IllegalArgumentException("User id cannot be null");
+        }
+        this.user = user;
+        this.mealStatus = mealStatus;
+        this.isCanceled = isCanceled;
+    }
 }
