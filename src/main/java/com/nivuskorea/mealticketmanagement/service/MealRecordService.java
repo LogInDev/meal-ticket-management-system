@@ -2,10 +2,12 @@ package com.nivuskorea.mealticketmanagement.service;
 
 import com.nivuskorea.mealticketmanagement.domain.MealRecord;
 import com.nivuskorea.mealticketmanagement.domain.MealStatus;
+import com.nivuskorea.mealticketmanagement.domain.TotalTicket;
 import com.nivuskorea.mealticketmanagement.domain.User;
 import com.nivuskorea.mealticketmanagement.repository.mealRecord.MealRecordQueryDto;
 import com.nivuskorea.mealticketmanagement.repository.mealRecord.MealRecordQueryRepository;
 import com.nivuskorea.mealticketmanagement.repository.mealRecord.MealRecordRepository;
+import com.nivuskorea.mealticketmanagement.repository.totalTicket.TotalTicketRepository;
 import com.nivuskorea.mealticketmanagement.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,20 +26,57 @@ public class MealRecordService {
     private final MealRecordRepository mealRecordRepository;
     private final UserRepository userRepository;
     private final MealRecordQueryRepository mealRecordQueryRepository;
+    private final TotalTicketRepository totalTicketRepository;
 
     /**
      * 식권 기록 추가
      */
     @Transactional
-    public MealRecord addRecord(Integer employeeNumber, MealStatus mealStatus, Boolean isCanceled) {
+    public void addRecord(Long userId, MealStatus mealStatus, Boolean isCanceled) {
         // User 조회
-        User savedUser = userRepository.findUserByEmployeeNumber(employeeNumber);
-        if (savedUser == null) {
-            throw new IllegalArgumentException("Employee number not found");
+        User savedUser = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // MealRecord 조회 또는 생성
+        MealRecord mealRecord = getOrCreatedMealRecord(mealStatus, isCanceled, savedUser);
+
+        // TotalTicket 관리
+        manageTotalTicket(mealRecord, isCanceled);
+    }
+
+    private MealRecord getOrCreatedMealRecord(MealStatus mealStatus, Boolean isCanceled, User savedUser) {
+        MealRecord mealRecord = mealRecordRepository.findByUserAndMealStatus(savedUser, mealStatus)
+                .orElseGet(() -> new MealRecord(savedUser, mealStatus, isCanceled));
+
+        // MealRecord 상태 업데이트
+        if (isCanceled) {
+            mealRecord.cancelMeal();
+        } else {
+            mealRecord.useMeal();
+        }
+        mealRecordRepository.save(mealRecord);
+        return mealRecord;
+    }
+
+    private void manageTotalTicket(MealRecord mealRecord, Boolean isCanceled) {
+        TotalTicket latestTicket = totalTicketRepository.findTopByOrderByCreatedAtDesc()
+                .orElseGet(() -> new TotalTicket(mealRecord, 100));
+
+        // 현재 totalCount 가져오기
+        int currentCount = latestTicket.getTotalCount();
+
+        TotalTicket addTotalTicket = new TotalTicket(mealRecord, currentCount);
+
+        // 상태에 따라 업데이트
+        if (isCanceled) {
+            addTotalTicket.decrease();
+        } else {
+            addTotalTicket.increase();
         }
 
-        // MealRecord 생성 및 저장
-        return mealRecordRepository.save(new MealRecord(savedUser,mealStatus,isCanceled));
+        // 새로운 TotalTicket 저장
+        totalTicketRepository.save(addTotalTicket);
+
     }
 
     /**

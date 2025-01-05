@@ -1,6 +1,7 @@
 package com.nivuskorea.mealticketmanagement.controller;
 import com.nivuskorea.mealticketmanagement.domain.MealStatus;
 import com.nivuskorea.mealticketmanagement.domain.User;
+import com.nivuskorea.mealticketmanagement.dto.UserForm;
 import com.nivuskorea.mealticketmanagement.service.MealRecordService;
 import com.nivuskorea.mealticketmanagement.service.UserService;
 import jakarta.validation.Valid;

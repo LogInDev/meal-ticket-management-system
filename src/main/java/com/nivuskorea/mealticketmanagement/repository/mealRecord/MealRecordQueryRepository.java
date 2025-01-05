@@ -29,4 +29,5 @@ public interface MealRecordQueryRepository extends JpaRepository<MealRecord, Lon
             @Param("startOfDay") LocalDateTime startOfDay,
             @Param("endOfDay") LocalDateTime endOfDay
     );
+
 }

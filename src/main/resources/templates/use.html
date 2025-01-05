@@ -5,36 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>식권 사용자</title>
 </head>
 <body>
 <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
-<script>
-    function updateActiveLine() {
-        const activeTab = document.querySelector('.tab-button.active');
-        const activeLine = document.querySelector('.active-line');
-
-        if (activeTab && activeLine) {
-            const tabLeft = activeTab.offsetLeft; // 활성 탭의 왼쪽 위치
-            activeLine.style.left = `${tabLeft}px`; // 활성화된 탭 위치로 이동
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // 초기 설정: 활성 라인을 현재 활성 탭으로 이동
-        updateActiveLine();
-
-        // 탭 클릭 시 활성화된 탭과 라인을 업데이트
-        const tabs = document.querySelectorAll('.tab-button');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(tab => tab.classList.remove('active')); // 모든 탭 비활성화
-                tab.classList.add('active'); // 클릭된 탭 활성화
-                updateActiveLine(); // 활성 라인 업데이트
-            });
-        });
-    });
-</script>
 <div class="container mt-4">
     <div class="tabs mb-3">
         <button class="tab-button" th:classappend="${mealType == 'lunch'} ? 'active' : ''" onclick="window.location='/use?mealType=lunch'">중식</button>
@@ -56,8 +31,18 @@
             <td th:text="${user.employeeNumber}"></td>
             <td th:text="${user.displayUpdateAt}"></td>
             <td class="text-center">
-                <button th:if="!${user.isCanceled}" class="btn btn-sm btn-success unused" th:onclick="'useTicket(' + ${user.id} + ')'" style="width: 80px;">사용</button>
-                <button th:if="${user.isCanceled}" class="btn btn-sm btn-danger used" th:onclick="'cancelTicket(' + ${user.id} + ')'" style="width: 80px;">사용완료</button>
+                <button th:if="!${user.isCanceled}" class="btn btn-sm btn-success unused"
+                        th:data-user-id="${user.id}"
+                        th:data-meal-type="${mealType}"
+                        th:data-is-canceled="true"
+                        th:onclick="'updateRecord(this)'"
+                        style="width: 80px;">사용</button>
+                <button th:if="${user.isCanceled}" class="btn btn-sm btn-danger used"
+                        th:data-user-id="${user.id}"
+                        th:data-meal-type="${mealType}"
+                        th:data-is-canceled="false"
+                        th:onclick="'updateRecord(this)'"
+                        style="width: 80px;">사용완료</button>
             </td>
         </tr>
         </tbody>
@@ -99,5 +84,7 @@
         </form>
     </div>
 </div>
+<!-- JavaScript 파일 로드 -->
+<script th:src="@{/js/use.js}"></script>
 </body>
 </html>

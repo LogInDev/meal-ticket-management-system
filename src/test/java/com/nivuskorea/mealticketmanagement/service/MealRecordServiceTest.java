@@ -40,7 +40,7 @@ class MealRecordServiceTest {
         MealStatus mealStatus = MealStatus.LUNCHED;
 
         // when - mealRecord 테이블에 식권 기록이 추가된다.
-        MealRecord savedRecord = mealRecordService.addRecord(user.getEmployeeNumber(), mealStatus, false);
+        MealRecord savedRecord = mealRecordService.addRecord(user.getId(), mealStatus, false);
 
         // then - 추가한 mealRecord 데이터와 기록이 일치한다.
         assertThat(savedRecord).isNotNull();
@@ -53,24 +53,24 @@ class MealRecordServiceTest {
     @DisplayName("오늘 날짜 중식 식권 명단 생성")
     void getLunchRecord() {
         //given - 사용자와 중식 식권 기록 생성
-        User user1 = new User("test", 1, EmploymentStatus.EMPLOYED);
-        User user2 = new User("test2", 2, EmploymentStatus.EMPLOYED);
-        User user3 = new User("test3", 3, EmploymentStatus.EMPLOYED);
+        User user1 = new User("test", 7, EmploymentStatus.EMPLOYED);
+        User user2 = new User("test2", 8, EmploymentStatus.EMPLOYED);
+        User user3 = new User("test3", 9, EmploymentStatus.EMPLOYED);
 
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
 
-        mealRecordService.addRecord(user1.getEmployeeNumber(), MealStatus.LUNCHED, false);
-        mealRecordService.addRecord(user2.getEmployeeNumber(), MealStatus.LUNCHED, false);
-        mealRecordService.addRecord(user3.getEmployeeNumber(), MealStatus.DINNER, false);
+        mealRecordService.addRecord(user1.getId(), MealStatus.LUNCHED, false);
+        mealRecordService.addRecord(user2.getId(), MealStatus.LUNCHED, false);
+        mealRecordService.addRecord(user3.getId(), MealStatus.DINNER, false);
 
         //when - 오늘 날짜 중식 식권 명단 조회
         List<MealRecordQueryDto> lunchRecords = mealRecordService.getLunchRecord(MealStatus.LUNCHED);
 
         //then - 조회한 중식 기록 검증
         assertThat(lunchRecords).isNotNull();
-        assertThat(lunchRecords.size()).isEqualTo(3); // 중식, 석식 여부와 관계없이 재직 상태의 user는 다 출력되어야함.
+        assertThat(lunchRecords.size()).isEqualTo(6); // 중식, 석식 여부와 관계없이 재직 상태의 user는 다 출력되어야함.
 
         MealRecordQueryDto lunchRecord1 = lunchRecords.stream()
                 .filter(record -> record.getId().equals(user1.getId()))

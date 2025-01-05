@@ -39,4 +39,12 @@ public class MealRecord extends BaseEntity {
         this.mealStatus = mealStatus;
         this.isCanceled = isCanceled;
     }
+
+    // 식권 사용 상태 변경
+    public void cancelMeal() {
+        this.isCanceled = true;
+    }
+    public void useMeal(){
+        this.isCanceled = false;
+    }
 }

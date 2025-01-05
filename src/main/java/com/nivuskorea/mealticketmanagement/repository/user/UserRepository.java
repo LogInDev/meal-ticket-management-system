@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findUserByEmployeeNumber(Integer employeeNumber);
 
     List<User> findUserByEmploymentStatus(EmploymentStatus employmentStatus);
+
+    User findUserById(Long id);
 }

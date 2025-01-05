@@ -2,6 +2,7 @@ package com.nivuskorea.mealticketmanagement.controller;
 
 import com.nivuskorea.mealticketmanagement.domain.EmploymentStatus;
 import com.nivuskorea.mealticketmanagement.domain.User;
+import com.nivuskorea.mealticketmanagement.dto.UserForm;
 import com.nivuskorea.mealticketmanagement.repository.user.UserRepository;
 import com.nivuskorea.mealticketmanagement.service.UserService;
 import org.junit.jupiter.api.DisplayName;

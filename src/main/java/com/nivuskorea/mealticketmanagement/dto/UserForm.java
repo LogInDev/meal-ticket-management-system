@@ -1,4 +1,4 @@
-package com.nivuskorea.mealticketmanagement.controller;
+package com.nivuskorea.mealticketmanagement.dto;
 
 import com.nivuskorea.mealticketmanagement.domain.EmploymentStatus;
 import jakarta.validation.constraints.NotEmpty;
