@@ -1,18 +1,14 @@
 package com.nivuskorea.mealticketmanagement.controller;
-import com.nivuskorea.mealticketmanagement.domain.EmploymentStatus;
 import com.nivuskorea.mealticketmanagement.domain.MealStatus;
 import com.nivuskorea.mealticketmanagement.domain.User;
 import com.nivuskorea.mealticketmanagement.service.MealRecordService;
 import com.nivuskorea.mealticketmanagement.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor

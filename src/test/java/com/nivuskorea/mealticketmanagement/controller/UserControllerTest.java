@@ -6,16 +6,19 @@ import com.nivuskorea.mealticketmanagement.repository.user.UserRepository;
 import com.nivuskorea.mealticketmanagement.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -28,7 +31,8 @@ public class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
+
+    @MockitoBean
     private UserService userService;
 
     @Test
@@ -54,22 +58,27 @@ public class UserControllerTest {
     }
 
     @Test
-    @DisplayName("중복되는 사용자 추가로 예외발생")
-    void duplicateUser_throwsDuplicateUserException() {
-
+    @DisplayName("중복되는 사원번호 예외발생")
+    void duplicateUser_throwsDuplicateUserException() throws Exception {
         // Given - 기존 사용자 저장
-        String username = "test";
-        int employeeNumber = 1;
-        EmploymentStatus employmentStatus = EmploymentStatus.EMPLOYED;
-        userRepository.save(new User(username, employeeNumber, employmentStatus));
+        Integer duplicateEmployeeNumber = 1;
+        UserForm userForm = new UserForm();
+        userForm.setEmployeeNumber(duplicateEmployeeNumber);
 
-        // When - 중복되는 사용자 저장
-        // Then - DuplicateUserException예외 발생하면 테스트 성공
-        DuplicateUserException exception = assertThrows(DuplicateUserException.class, () -> {
-            userService.addUser(new User(username, employeeNumber, employmentStatus));
-        });
+        // Mock UserService 동작 설정
+        Mockito.when(userService.isDuplicateEmployeeNumber(duplicateEmployeeNumber)).thenReturn(true);
 
-        assertThat(exception.getMessage()).isEqualTo("User already exists");
+        // When
+        MvcResult mvcResult = mockMvc.perform(post("/use")
+                .param("employeeNumber", String.valueOf(duplicateEmployeeNumber))
+                .param("mealType", "lunch")
+                .flashAttr("userForm", userForm))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasFieldErrors("userForm", "employeeNumber"))
+                .andExpect(model().attributeHasFieldErrorCode("userForm", "employeeNumber", "duplicate"))
+                .andReturn();
+
+
     }
 
 }
