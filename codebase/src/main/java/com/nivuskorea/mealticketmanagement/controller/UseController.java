@@ -2,13 +2,15 @@ package com.nivuskorea.mealticketmanagement.controller;
 import com.nivuskorea.mealticketmanagement.domain.EmploymentStatus;
 import com.nivuskorea.mealticketmanagement.domain.MealStatus;
 import com.nivuskorea.mealticketmanagement.dto.UserForm;
-import com.nivuskorea.mealticketmanagement.service.MealRecordService;
 import com.nivuskorea.mealticketmanagement.service.UserService;
-import jakarta.validation.Valid;
+import com.nivuskorea.mealticketmanagement.validation.ValidationSequence;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -30,7 +32,7 @@ public class UseController {
                       Model model) {
         model.addAttribute("currentPage", "use");
         model.addAttribute("mealType", mealType);
-        model.addAttribute("users",userService.getLunchRecord(MealStatus.from(mealType)));
+        model.addAttribute("users",userService.getEligibleUsersForTodayMeal(MealStatus.from(mealType)));
         // FlashAttribute에서 받은 userForm이 없으면 기본값 설정
         if (userForm.getEmploymentStatus() == null) {
             userForm.setEmploymentStatus(EmploymentStatus.EMPLOYED);
@@ -41,7 +43,7 @@ public class UseController {
     }
 
     @PostMapping("/meal_use")
-    public String saveOrUpdateUser(@Valid UserForm userForm,
+    public String saveOrUpdateUser(@Validated(ValidationSequence.class) UserForm userForm,
                                    BindingResult result,
                                    @RequestParam(name = "mealType", defaultValue = "lunch") String mealType,
                                    Model model, RedirectAttributes redirectAttributes) {
@@ -50,7 +52,7 @@ public class UseController {
             System.out.println("유효성 검증 실패" + mealType);
             model.addAttribute("currentPage", "use");
             model.addAttribute("mealType", mealType);
-            model.addAttribute("users", userService.getLunchRecord(MealStatus.from(mealType)));
+            model.addAttribute("users", userService.getEligibleUsersForTodayMeal(MealStatus.from(mealType)));
             redirectAttributes.addFlashAttribute("message", "수정이 적용되지 않았습니다.");
             return "use";
         }
@@ -68,6 +70,14 @@ public class UseController {
         return "redirect:/meal_use?mealType=" + mealType;
     }
 
-
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true) {
+            @Override
+            public void setAsText(String text) {
+                super.setAsText(text == null ? null : text.replaceAll("\\s+", ""));
+            }
+        });
+    }
 
 }

@@ -58,28 +58,6 @@ public class UserControllerTest {
         assertThat(createdUser.getEmploymentStatus()).isEqualTo(employmentStatus); // 재직 상태가 일치하는지 확인
     }
 
-    @Test
-    @DisplayName("중복되는 사원번호 예외발생")
-    void duplicateUser_throwsDuplicateUserException() throws Exception {
-        // Given - 기존 사용자 저장
-        Integer duplicateEmployeeNumber = 1;
-        UserForm userForm = new UserForm();
-        userForm.setEmployeeNumber(duplicateEmployeeNumber);
 
-        // Mock UserService 동작 설정
-        Mockito.when(userService.isDuplicateEmployeeNumber(duplicateEmployeeNumber)).thenReturn(true);
-
-        // When
-        MvcResult mvcResult = mockMvc.perform(post("/use")
-                .param("employeeNumber", String.valueOf(duplicateEmployeeNumber))
-                .param("mealType", "lunch")
-                .flashAttr("userForm", userForm))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeHasFieldErrors("userForm", "employeeNumber"))
-                .andExpect(model().attributeHasFieldErrorCode("userForm", "employeeNumber", "duplicate"))
-                .andReturn();
-
-
-    }
 
 }

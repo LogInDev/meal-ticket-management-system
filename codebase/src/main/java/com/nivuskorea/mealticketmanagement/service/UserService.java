@@ -52,14 +52,15 @@ public class UserService {
             existingUser.update(userForm.getName(), userForm.getEmploymentStatus());
         } else {
             existingUser = new User(userForm.getName(), Integer.valueOf(userForm.getEmployeeNumber()), EmploymentStatus.EMPLOYED);
+            userRepository.save(existingUser);
         }
 
     }
 
     /**
-     * 오늘 날짜 중식 식권 대장 조회
+     * 오늘 날짜 식권 사용 가능자 조회
      */
-    public List<MealRecordQueryDto> getLunchRecord(MealStatus mealStatus) {
+    public List<MealRecordQueryDto> getEligibleUsersForTodayMeal(MealStatus mealStatus) {
         // 오늘 날짜 데이터 범위 기준 생성
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();

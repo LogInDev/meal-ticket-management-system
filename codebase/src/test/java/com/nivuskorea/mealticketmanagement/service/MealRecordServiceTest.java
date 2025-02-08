@@ -6,7 +6,6 @@ import com.nivuskorea.mealticketmanagement.domain.MealStatus;
 import com.nivuskorea.mealticketmanagement.domain.User;
 import com.nivuskorea.mealticketmanagement.repository.mealRecord.MealRecordQueryDto;
 import com.nivuskorea.mealticketmanagement.repository.user.UserRepository;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -69,7 +67,7 @@ class MealRecordServiceTest {
         mealRecordService.addRecord(user3.getId(), MealStatus.DINNER, false);
 
         //when - 오늘 날짜 중식 식권 명단 조회
-        List<MealRecordQueryDto> lunchRecords = userService.getLunchRecord(MealStatus.LUNCHED);
+        List<MealRecordQueryDto> lunchRecords = userService.getEligibleUsersForTodayMeal(MealStatus.LUNCHED);
 
         //then - 조회한 중식 기록 검증
         assertThat(lunchRecords).isNotNull();
