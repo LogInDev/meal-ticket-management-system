@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>식권 사용자</title>
+</head>
+<body>
+<div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
+<div class="container mt-4">
+    <div class="tabs mb-3">
+        <button class="tab-button" th:classappend="${mealType == 'lunch'} ? 'active' : ''" onclick="window.location='/meal_use?mealType=lunch'">중식</button>
+        <button class="tab-button" th:classappend="${mealType == 'dinner'} ? 'active' : ''" onclick="window.location='/meal_use?mealType=dinner'">석식</button>
+        <div class="active-line"></div>
+    </div>
+    <table class="table table-bordered">
+        <thead class="table-light">
+        <tr>
+            <th style="width: 25%;">이름</th>
+            <th style="width: 25%;">사원번호</th>
+            <th style="width: 25%;">적용시간</th>
+            <th style="width: 25%;">사용여부</th>
+        </tr>
+        </thead>
+        <tbody>®
+        <tr th:each="user : ${users}">
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.employeeNumber}"></td>
+            <td th:text="${user.displayUpdateAt}"></td>
+            <td class="text-center">
+                <button th:if="!${user.isCanceled}" class="btn btn-sm btn-success unused"
+                        th:data-user-id="${user.id}"
+                        th:data-meal-type="${mealType}"
+                        th:data-is-canceled="true"
+                        th:onclick="'updateRecord(this)'"
+                        style="width: 80px;">사용</button>
+                <button th:if="${user.isCanceled}" class="btn btn-sm btn-danger used"
+                        th:data-user-id="${user.id}"
+                        th:data-meal-type="${mealType}"
+                        th:data-is-canceled="false"
+                        th:onclick="'updateRecord(this)'"
+                        style="width: 80px;">사용완료</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="footer mt-4">
+        <form th:action="@{/meal_use}" th:method="post" th:object="${userForm}">
+            <input type="hidden" name="mealType" th:value="${mealType}" />
+            <table th:class="add_user_table">
+                <tr>
+                    <th><label for="name" class="form-label">이름</label></th>
+                    <th><label for="employeeNumber" class="form-label">사원번호</label></th>
+                    <th><label class="form-label">재직 상태</label></th>
+                    <th rowspan="2" colspan="3" style="text-align: center;">
+                        <button type="submit" class="btn btn-primary btn-block">적용</button>
+                    </th>
+                </tr>
+                <tr>
+                    <td><input type="text" id="name" th:field="*{name}"
+                               th:class="${#fields.hasErrors('name')} ? 'form-control is-invalid' : 'form-control'" /></td>
+
+                    <td><input type="text" id="employeeNumber" th:field="*{employeeNumber}"
+                    th:class="${#fields.hasErrors('employeeNumber')} ? 'form-control is-invalid' : 'form-control'" /></td>
+
+                    <td>
+                        <div th:each="status : ${T(com.nivuskorea.mealticketmanagement.domain.EmploymentStatus).values()}">
+                            <input type="radio" th:field="*{employmentStatus}" th:value="${status}" th:id="'status-' + ${status}" />
+                            <label th:for="'status-' + ${status}" th:text="${status}"></label>
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="error-msg"><p th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></p></td>
+                    <td class="error-msg"><p th:errors="*{employeeNumber}" th:if="${#fields.hasErrors('employeeNumber')}"></p></td>
+                    <td></td> <!-- 에러 메시지 공간 유지 -->
+                </tr>
+            </table>
+        </form>
+        <div th:if="${message}" class="alert alert-success">
+            <p th:text="${message}"></p>
+        </div>
+    </div>
+</div>
+<!-- JavaScript 파일 로드 -->
+<script th:src="@{/js/use.js}"></script>
+</body>
+</html>

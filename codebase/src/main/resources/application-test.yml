@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/meal_ticket_management?allowPublicKeyRetrieval=true&useSSL=false
+    username: gu
+    password: wndRjrek811!
