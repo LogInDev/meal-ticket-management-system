@@ -6,6 +6,10 @@ build/
 !**/src/test/**/build/
 !**/application-test.yml
 
+### Obsidian ###
+# config dir
+.obsidian/
+
 ### STS ###
 .apt_generated
 .classpath
