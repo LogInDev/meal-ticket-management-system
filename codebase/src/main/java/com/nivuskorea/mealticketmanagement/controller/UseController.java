@@ -70,7 +70,13 @@ public class UseController {
         return "redirect:/meal_use?mealType=" + mealType;
     }
 
-    @InitBinder
+
+    /**
+     * String 타입 필드 공백 제거
+     * @param binder Spring MVC에서 컨트롤러의 요청 파라미터를 바인딩할 때 사용되는 객체.
+     *               즉, 클라이언트가 보낸 데이터를 컨트롤러의 파라미터나 객체에 자동으로 넣어주는 역할
+     */
+    @InitBinder("userForm")
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true) {
             @Override
