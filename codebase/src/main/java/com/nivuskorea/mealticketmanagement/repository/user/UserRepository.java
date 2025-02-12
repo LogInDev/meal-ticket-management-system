@@ -18,8 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findUserByEmployeeNumber(Integer employeeNumber);
 
-    List<User> findUserByEmploymentStatus(EmploymentStatus employmentStatus);
-
     @Query("""
         SELECT new com.nivuskorea.mealticketmanagement.repository.mealRecord.MealRecordQueryDto(
             u.id, u.name, u.employeeNumber, mr.mealStatus, mr.isCanceled, mr.createdAt, mr.updatedAt

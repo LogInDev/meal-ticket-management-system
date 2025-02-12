@@ -15,7 +15,7 @@ public class User extends BaseEntity {
     @Column(name = "USER_ID")
     private Long id;
     private String name;
-    @Column(name = "employee_number", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private Integer employeeNumber;
 
     @Enumerated(EnumType.STRING)
